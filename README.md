@@ -7,5 +7,7 @@ My live project is [Genius car mechanics](https://github.com/facebook/create-rea
 * React
 * React Router
 * Boostrap
-* Firebase
+* React bootstrap
+* Firebase Authentication
+* React router hash link
 

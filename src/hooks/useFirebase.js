@@ -6,19 +6,20 @@ import initializeAuthentication from './../Pages/Login/Firebase/firebase.init';
 initializeAuthentication()
 
 const useFirebase = () => {
-    const [user, setUsers] = useState({})
-    const [error, setError] = useState('')
+    const [user, setUser] = useState({})
+    const [isLoading, setIsLoading] = useState(true)
 
     const auth = getAuth(); 
 
     const googleSignIn = () => {
+        setIsLoading(true)
         const googleProvider = new GoogleAuthProvider();
         signInWithPopup(auth, googleProvider)
         .then(result => {
-            setUsers(result.user)
+            setUser(result.user)
         })
-        .catch(error => {
-            setError(error.message)
+        .finally(() =>{
+            setIsLoading(false)
         })
     }
 
@@ -26,29 +27,31 @@ const useFirebase = () => {
     useEffect(() => {
         const unsubscribed = onAuthStateChanged(auth, (user) => {
             if(user){
-                setUsers(user)
+                setUser(user)
             } else {
-                setUsers({})
+                setUser({})
             }
+            setIsLoading(false)
         })
         return () => unsubscribed;
     }, [])
 
     const logOut = () => {
+        setIsLoading(true)
         signOut(auth)
         .then(() => {
             console.log('log out success')
         })
-        .catch(error => {
-            setError(error.message)
+        .finally(() =>{
+            setIsLoading(false)
         })
     }
     
     return {
         googleSignIn,
         logOut,
-        users: user,
-        error
+        user,
+        isLoading
     }
 }
 export default useFirebase
